@@ -8,18 +8,21 @@ class Icontact
     API_VERSION = "2.2"
     URL = 'https://app.icontact.com/icp'
     API_KEY = "API_KEY"
+    DEFAULT_READ_TIMEOUT = 60
     attr_accessor :username
     attr_accessor :password
     attr_accessor :app_id
     attr_accessor :url
     attr_accessor :api_version
+    attr_accessor :read_timeout
   
-    def initialize(username=nil, password=nil)
+    def initialize(username=nil, password=nil, read_timeout=nil)
       self.username = username
       self.password = password
       self.url = URL
       self.app_id = API_KEY
       self.api_version = API_VERSION
+      self.read_timeout = read_timeout || DEFAULT_READ_TIMEOUT
     end
     
     # Package up any options into a query string and format it properly for the server
@@ -95,6 +98,7 @@ class Icontact
       http = Net::HTTP.new(full_url.host, full_url.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.read_timeout = read_timeout
       response = http.start do |web|
         web.request(request)
       end
